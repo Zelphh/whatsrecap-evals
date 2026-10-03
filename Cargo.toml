@@ -1,0 +1,28 @@
+[package]
+name = "whatsrecap-evals"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "Benchmark de modelos de linguagem locais (llama.cpp) para o WhatsRecap"
+publish = false
+
+[[bin]]
+name = "evals"
+path = "src/main.rs"
+
+[dependencies]
+# Contratos com o LLM (schemas, prompts, ToolCall) vêm direto do app: nada de cópia.
+core-chat = { path = "../../Documentos/whats-recap/crates/core-chat" }
+anyhow = "1"
+chrono = "0.4.45"
+clap = { version = "4.6", features = ["derive"] }
+regex = "1.13.1"
+rusqlite = "0.40"
+serde = { version = "1.0.229", features = ["derive"] }
+# Sem "preserve_order": o app serializa objetos com chaves ordenadas, e o prompt tem de ser igual.
+serde_json = "1.0.151"
+toml = "0.9"
+ureq = { version = "3", features = ["json"] }
+
+[profile.dev.package."*"]
+opt-level = 2

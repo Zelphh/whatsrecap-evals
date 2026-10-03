@@ -1,0 +1,152 @@
+{
+  "_doc": "Detecção de desculpas (tarefa D). Cada janela tem mensagens [id, autor, texto] e o gabarito. 'ambiguous_sincere' lista ids cujo 'sincere' é discutível: contam para precisão/recall, mas não para a acurácia de sincere.",
+  "items": [
+    {"id": "d01", "note": "sincera após conflito, duas mensagens",
+     "messages": [
+      [1001, "Ana Souza", "vc viu que horas são?"],
+      [1002, "Bruno", "vi, o jogo atrasou"],
+      [1003, "Ana Souza", "vc disse que vinha jantar comigo"],
+      [1004, "Ana Souza", "eu fiz lasanha Bruno"],
+      [1005, "Bruno", "eu sei amor, foi mal mesmo"],
+      [1006, "Bruno", "me desculpa, sério, eu devia ter avisado"],
+      [1007, "Ana Souza", "tá"],
+      [1008, "Ana Souza", "amanhã vc lava a louça kkk"],
+      [1009, "Bruno", "fechado 🙏"]],
+     "gold": [
+      {"msg_id": 1005, "from": "Bruno", "to": "Ana Souza", "sincere": true},
+      {"msg_id": 1006, "from": "Bruno", "to": "Ana Souza", "sincere": true}]},
+
+    {"id": "d02", "note": "cortesia",
+     "messages": [
+      [1101, "Bruno", "oi, conseguiu ver o boleto?"],
+      [1102, "Ana Souza", "desculpa a demora, tava em reunião o dia todo"],
+      [1103, "Ana Souza", "vi sim, já paguei"],
+      [1104, "Bruno", "show, valeu"],
+      [1105, "Ana Souza", "foi mal não ter respondido antes viu"],
+      [1106, "Bruno", "relaxa kkkk"]],
+     "gold": [
+      {"msg_id": 1102, "from": "Ana Souza", "to": "Bruno", "sincere": false},
+      {"msg_id": 1105, "from": "Ana Souza", "to": "Bruno", "sincere": false}]},
+
+    {"id": "d03", "note": "desculpas de terceiros, contadas",
+     "messages": [
+      [1201, "Ana Souza", "meu chefe veio pedir desculpa pela grosseria de ontem"],
+      [1202, "Bruno", "sério? milagre"],
+      [1203, "Ana Souza", "pois é kkkk disse que tava estressado"],
+      [1204, "Bruno", "e vc aceitou?"],
+      [1205, "Ana Souza", "aceitei né, fazer o que"],
+      [1206, "Bruno", "eu ia mandar ele pedir perdão de joelhos kkkk"]],
+     "gold": []},
+
+    {"id": "d04", "note": "ironia",
+     "messages": [
+      [1301, "Bruno", "vc pegou meu carregador de novo"],
+      [1302, "Ana Souza", "ah desculpa por existir né"],
+      [1303, "Bruno", "não é isso, só me avisa"],
+      [1304, "Ana Souza", "ok, senhor do carregador"],
+      [1305, "Bruno", "🙄"]],
+     "gold": []},
+
+    {"id": "d05", "note": "'perdão' como interjeição; desculpa a uma desconhecida",
+     "messages": [
+      [1401, "Ana Souza", "PERDÃO, vc viu o preço da gasolina??"],
+      [1402, "Bruno", "vi, absurdo"],
+      [1403, "Bruno", "hoje esbarrei numa senhora no mercado e pedi mil desculpas kkkk"],
+      [1404, "Ana Souza", "kkkkk vc é muito estabanado"]],
+     "gold": []},
+
+    {"id": "d06", "note": "sincera, de Ana, assunto sério",
+     "messages": [
+      [1501, "Bruno", "vc contou pra sua mãe sobre minha demissão?"],
+      [1502, "Ana Souza", "contei... achei que não tinha problema"],
+      [1503, "Bruno", "eu te pedi pra não contar pra ninguém"],
+      [1504, "Bruno", "agora ela me ligou toda preocupada"],
+      [1505, "Ana Souza", "nossa, é verdade, vc tinha pedido"],
+      [1506, "Ana Souza", "me perdoa amor, eu não pensei direito"],
+      [1507, "Ana Souza", "não vai se repetir"],
+      [1508, "Bruno", "tudo bem, só fiquei chateado"],
+      [1509, "Ana Souza", "com razão. desculpa mesmo ❤️"]],
+     "gold": [
+      {"msg_id": 1506, "from": "Ana Souza", "to": "Bruno", "sincere": true},
+      {"msg_id": 1509, "from": "Ana Souza", "to": "Bruno", "sincere": true}]},
+
+    {"id": "d07", "note": "'sorry', cortesia",
+     "messages": [
+      [1601, "Bruno", "sorry, esqueci de te ligar ontem, capotei"],
+      [1602, "Ana Souza", "tudo bem kkk tbm dormi cedo"],
+      [1603, "Ana Souza", "hoje vai?"],
+      [1604, "Bruno", "vou sim"]],
+     "gold": [
+      {"msg_id": 1601, "from": "Bruno", "to": "Ana Souza", "sincere": false}]},
+
+    {"id": "d08", "note": "os dois pedem desculpa depois de uma discussão",
+     "messages": [
+      [1701, "Ana Souza", "eu não gostei do jeito que vc falou comigo na frente dos seus amigos"],
+      [1702, "Bruno", "que jeito?"],
+      [1703, "Ana Souza", "me chamando de lerda"],
+      [1704, "Bruno", "era brincadeira"],
+      [1705, "Ana Souza", "não teve graça nenhuma"],
+      [1706, "Bruno", "tá, desculpa, não queria te expor"],
+      [1707, "Ana Souza", "e eu desculpa por ter saído sem falar tchau, foi infantil"],
+      [1708, "Bruno", "tamo bem?"],
+      [1709, "Ana Souza", "tamo"]],
+     "gold": [
+      {"msg_id": 1706, "from": "Bruno", "to": "Ana Souza", "sincere": true},
+      {"msg_id": 1707, "from": "Ana Souza", "to": "Bruno", "sincere": true}]},
+
+    {"id": "d09", "note": "desculpa em nome de outra pessoa (não conta)",
+     "messages": [
+      [1801, "Ana Souza", "minha mãe pediu pra te pedir desculpas pelo comentário do almoço"],
+      [1802, "Bruno", "imagina, nem liguei"],
+      [1803, "Ana Souza", "ela ficou mal kkk"],
+      [1804, "Bruno", "fala pra ela que tá tudo certo"]],
+     "gold": []},
+
+    {"id": "d10", "note": "abreviações e erro de digitação",
+     "messages": [
+      [1901, "Ana Souza", "cadê vc??"],
+      [1902, "Ana Souza", "to te esperando faz 40 min"],
+      [1903, "Bruno", "dsclp amor, o onibus quebrou"],
+      [1904, "Ana Souza", "e vc nao podia avisar???"],
+      [1905, "Bruno", "fiquei sem bateria, foi mal msm"],
+      [1906, "Ana Souza", "tá bom né"]],
+     "gold": [
+      {"msg_id": 1903, "from": "Bruno", "to": "Ana Souza", "sincere": true},
+      {"msg_id": 1905, "from": "Bruno", "to": "Ana Souza", "sincere": true}],
+     "ambiguous_sincere": [1903]},
+
+    {"id": "d11", "note": "'desculpa' como substantivo",
+     "messages": [
+      [2001, "Bruno", "o time perdeu de novo"],
+      [2002, "Ana Souza", "kkkkk não tem desculpa pra esse goleiro"],
+      [2003, "Bruno", "nenhuma desculpa, vergonha"],
+      [2004, "Ana Souza", "semana que vem ganha"]],
+     "gold": []},
+
+    {"id": "d12", "note": "desculpa longa entre mídias",
+     "messages": [
+      [2101, "Bruno", "<figurinha omitida>"],
+      [2102, "Ana Souza", "kkkkkk"],
+      [2103, "Ana Souza", "ah, e desculpa por ontem, eu tava muito estressada com o trabalho e descontei em vc, não foi justo"],
+      [2104, "Bruno", "tá tudo bem amor, eu entendo"],
+      [2105, "Bruno", "<áudio omitido>"]],
+     "gold": [
+      {"msg_id": 2103, "from": "Ana Souza", "to": "Bruno", "sincere": true}]},
+
+    {"id": "d13", "note": "cortesia por mensagem no chat errado",
+     "messages": [
+      [2201, "Ana Souza", "comprar: leite, ovos, papel higiênico"],
+      [2202, "Ana Souza", "perdão, mandei no chat errado kkkk era pro grupo da família"],
+      [2203, "Bruno", "kkkk mas já que mandou traz leite pra mim tbm"]],
+     "gold": [
+      {"msg_id": 2202, "from": "Ana Souza", "to": "Bruno", "sincere": false}]},
+
+    {"id": "d14", "note": "'não precisa pedir desculpa' não é pedido",
+     "messages": [
+      [2301, "Ana Souza", "desculpa te encher com isso de novo"],
+      [2302, "Bruno", "não precisa pedir desculpa, pode desabafar sempre"],
+      [2303, "Ana Souza", "obrigada, de verdade"]],
+     "gold": [
+      {"msg_id": 2301, "from": "Ana Souza", "to": "Bruno", "sincere": false}]}
+  ]
+}

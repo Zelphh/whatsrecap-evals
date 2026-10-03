@@ -1,0 +1,7 @@
+{
+  "_doc": "Metadados da conversa fictícia usada pelas tarefas. 'today' fixa a data de referência para datas relativas ('ano passado'); no app será a data real.",
+  "authors": ["Ana Souza", "Bruno"],
+  "first_date": "2021-03-14",
+  "last_date": "2026-02-27",
+  "today": "2026-02-27"
+}

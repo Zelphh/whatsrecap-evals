@@ -1,0 +1,153 @@
+# Modelos candidatos, embedders e perfis de hardware.
+# Arquivos baixados com `python -m evals download <id>` (ou --all) para models/.
+# Tamanhos conferidos no Hugging Face em 2026-10-03.
+
+[defaults]
+llama_dir = "vendor/llama.cpp/current"   # scripts/setup-llama-cpp.sh
+models_dir = "models"
+results_dir = "results"
+port = 8089
+temperature = 0.0
+seed = 42
+
+# ---------------------------------------------------------------- perfis
+# `args` vão para o llama-server; `bench_args` são os equivalentes do llama-bench.
+
+[profiles.dev]
+description = "notebook de desenvolvimento, só CPU: valida o harness e a qualidade com modelos pequenos"
+args = ["-ngl", "0", "-c", "8192", "-t", "4"]
+bench_args = ["-ngl", "0", "-t", "4"]
+
+[profiles.dev-vulkan]
+description = "notebook com a iGPU via Vulkan (só para conferir que o backend Vulkan funciona)"
+args = ["-ngl", "99", "-c", "8192"]
+bench_args = ["-ngl", "99"]
+
+[profiles.rx7600]
+description = "ALVO: RX 7600 8 GB via Vulkan, contexto 16k, KV em q8_0, flash attention"
+args = ["-ngl", "99", "-c", "16384", "-fa", "on", "-ctk", "q8_0", "-ctv", "q8_0"]
+bench_args = ["-ngl", "99", "-fa", "on", "-ctk", "q8_0", "-ctv", "q8_0"]
+env = { GGML_VK_VISIBLE_DEVICES = "0" }
+
+[profiles.rx7600-8k]
+description = "ALVO: contexto 8k, KV f16 (compara com o perfil de 16k/q8_0)"
+args = ["-ngl", "99", "-c", "8192", "-fa", "on"]
+bench_args = ["-ngl", "99", "-fa", "on"]
+env = { GGML_VK_VISIBLE_DEVICES = "0" }
+
+[profiles.r5700x-cpu]
+description = "ALVO sem GPU: Ryzen 7 5700X (8C/16T), linha de base caso a GPU não esteja disponível"
+args = ["-ngl", "0", "-c", "8192", "-t", "8"]
+bench_args = ["-ngl", "0", "-t", "8"]
+
+# ---------------------------------------------------------------- modelos de chat/classificação
+# `--reasoning off`: a tarefa é de saída estruturada curta; raciocínio só gasta tempo
+# (dá para testar com raciocínio via --server-args "--reasoning on").
+
+[[models]]
+id = "qwen3.5-2b-q4km"
+repo = "unsloth/Qwen3.5-2B-GGUF"
+file = "Qwen3.5-2B-Q4_K_M.gguf"
+family = "qwen3.5"
+params_b = 2
+quant = "Q4_K_M"
+args = ["--reasoning", "off"]
+notes = "1,3 GB · linha de base de velocidade; roda no notebook"
+
+[[models]]
+id = "qwen3.5-4b-q4km"
+repo = "unsloth/Qwen3.5-4B-GGUF"
+file = "Qwen3.5-4B-Q4_K_M.gguf"
+family = "qwen3.5"
+params_b = 4
+quant = "Q4_K_M"
+args = ["--reasoning", "off"]
+notes = "2,7 GB"
+
+[[models]]
+id = "qwen3.5-4b-q8"
+repo = "unsloth/Qwen3.5-4B-GGUF"
+file = "Qwen3.5-4B-Q8_0.gguf"
+family = "qwen3.5"
+params_b = 4
+quant = "Q8_0"
+args = ["--reasoning", "off"]
+notes = "4,5 GB · mede o custo da quantização no 4B"
+
+[[models]]
+id = "qwen3-4b-2507-q4km"
+repo = "unsloth/Qwen3-4B-Instruct-2507-GGUF"
+file = "Qwen3-4B-Instruct-2507-Q4_K_M.gguf"
+family = "qwen3"
+params_b = 4
+quant = "Q4_K_M"
+notes = "2,5 GB · geração anterior, sem raciocínio"
+
+[[models]]
+id = "qwen3.5-9b-iq4xs"
+repo = "unsloth/Qwen3.5-9B-GGUF"
+file = "Qwen3.5-9B-IQ4_XS.gguf"
+family = "qwen3.5"
+params_b = 9
+quant = "IQ4_XS"
+args = ["--reasoning", "off"]
+notes = "5,2 GB · maior Qwen que cabe com folga de contexto em 8 GB"
+
+[[models]]
+id = "qwen3.5-9b-q4km"
+repo = "unsloth/Qwen3.5-9B-GGUF"
+file = "Qwen3.5-9B-Q4_K_M.gguf"
+family = "qwen3.5"
+params_b = 9
+quant = "Q4_K_M"
+args = ["--reasoning", "off"]
+notes = "5,7 GB · apertado em 8 GB com 16k de contexto"
+
+[[models]]
+id = "gemma4-e4b-q4_0"
+repo = "ggml-org/gemma-4-E4B-it-GGUF"
+file = "gemma-4-E4B-it-Q4_0.gguf"
+family = "gemma4"
+params_b = 4
+quant = "Q4_0"
+args = ["--reasoning", "off"]
+notes = "4,6 GB · feito para tool calling em hardware limitado"
+
+[[models]]
+id = "gemma4-12b-iq4xs"
+repo = "unsloth/gemma-4-12b-it-GGUF"
+file = "gemma-4-12b-it-IQ4_XS.gguf"
+family = "gemma4"
+params_b = 12
+quant = "IQ4_XS"
+args = ["--reasoning", "off"]
+notes = "6,4 GB · no limite dos 8 GB; teste com rx7600-8k"
+
+[[models]]
+id = "llama3.1-8b-q4km"
+repo = "bartowski/Meta-Llama-3.1-8B-Instruct-GGUF"
+file = "Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf"
+family = "llama3.1"
+params_b = 8
+quant = "Q4_K_M"
+notes = "4,9 GB · referência antiga, português mais fraco"
+
+# ---------------------------------------------------------------- embedders (chat tipo 2)
+
+[[embedders]]
+id = "e5-small-q8"
+repo = "TwinSunsLLC/multilingual-e5-small-gguf"
+file = "multilingual-e5-small-q8_0.gguf"
+quant = "Q8_0"
+args = ["--pooling", "mean", "-c", "8192", "-b", "8192", "-ub", "8192"]
+query_prefix = "query: "
+passage_prefix = "passage: "
+notes = "130 MB · rápido, roda na CPU"
+
+[[embedders]]
+id = "bge-m3-q8"
+repo = "ggml-org/bge-m3-Q8_0-GGUF"
+file = "bge-m3-q8_0.gguf"
+quant = "Q8_0"
+args = ["--pooling", "cls", "-c", "8192", "-b", "8192", "-ub", "8192"]
+notes = "630 MB · melhor, mais pesado"

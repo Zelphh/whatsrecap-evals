@@ -1,0 +1,960 @@
+{
+ "_doc": "Chat tipo 2 (tarefa F) e avaliação de embeddings. 'windows' são sessões com assunto coerente; a tarefa de retrieval mistura janelas de ruído geradas (evals/fillers.py) para o corpus não ficar trivial. Nas perguntas: 'gold_windows' (janelas que respondem), 'gold_ids' (mensagens que sustentam a resposta), 'must' (grupos: pelo menos uma forma de cada grupo na resposta). answerable=false: a resposta não está na conversa; o esperado é found=false. 'context_extra': janelas que entram no contexto do LLM mesmo sem responder (armadilhas).",
+ "windows": [
+  {
+   "id": "w01",
+   "date": "2023-02-10",
+   "messages": [
+    [
+     5001,
+     "Ana Souza",
+     "e se a gente fosse pra Floripa no carnaval?"
+    ],
+    [
+     5002,
+     "Bruno",
+     "bora! mas carnaval fica tudo caro"
+    ],
+    [
+     5003,
+     "Ana Souza",
+     "então vamos na semana depois, dia 25"
+    ],
+    [
+     5004,
+     "Bruno",
+     "fechado, 25 de fevereiro. eu vejo pousada"
+    ],
+    [
+     5005,
+     "Bruno",
+     "achei uma na Lagoa da Conceição, 280 a diária"
+    ],
+    [
+     5006,
+     "Ana Souza",
+     "perfeito, reserva!"
+    ],
+    [
+     5007,
+     "Bruno",
+     "reservado ✅ 3 diárias"
+    ]
+   ]
+  },
+  {
+   "id": "w02",
+   "date": "2023-04-03",
+   "messages": [
+    [
+     5101,
+     "Ana Souza",
+     "AMOR PASSEI"
+    ],
+    [
+     5102,
+     "Bruno",
+     "na vaga da Nuvem Tech??"
+    ],
+    [
+     5103,
+     "Ana Souza",
+     "SIM. começo dia 17"
+    ],
+    [
+     5104,
+     "Ana Souza",
+     "o salário é bem melhor e é híbrido, 2x por semana no escritório"
+    ],
+    [
+     5105,
+     "Bruno",
+     "que orgulho!!! vamos comemorar"
+    ],
+    [
+     5106,
+     "Ana Souza",
+     "só fiquei com medo da gestora, parecia meio brava na entrevista"
+    ],
+    [
+     5107,
+     "Bruno",
+     "vai dar tudo certo"
+    ]
+   ]
+  },
+  {
+   "id": "w03",
+   "date": "2023-05-20",
+   "messages": [
+    [
+     5201,
+     "Bruno",
+     "lembra daquele japonês que o Rafa indicou?"
+    ],
+    [
+     5202,
+     "Ana Souza",
+     "o Hanami?"
+    ],
+    [
+     5203,
+     "Bruno",
+     "isso, Hanami, na rua Augusta"
+    ],
+    [
+     5204,
+     "Bruno",
+     "vamos sábado?"
+    ],
+    [
+     5205,
+     "Ana Souza",
+     "vamos! reserva pras 20h"
+    ],
+    [
+     5206,
+     "Bruno",
+     "feito"
+    ]
+   ]
+  },
+  {
+   "id": "w04",
+   "date": "2023-07-15",
+   "messages": [
+    [
+     5301,
+     "Ana Souza",
+     "o filme foi lindo, chorei muito"
+    ],
+    [
+     5302,
+     "Bruno",
+     "kkkk vi vc chorando no final"
+    ],
+    [
+     5303,
+     "Ana Souza",
+     "a parte do cachorro me destruiu"
+    ],
+    [
+     5304,
+     "Bruno",
+     "\"Caminhos de Luz\" vai entrar no meu top 3"
+    ],
+    [
+     5305,
+     "Ana Souza",
+     "no meu tbm"
+    ]
+   ]
+  },
+  {
+   "id": "w05",
+   "date": "2023-08-30",
+   "messages": [
+    [
+     5401,
+     "Ana Souza",
+     "vi uma cachorrinha pra adoção no instagram"
+    ],
+    [
+     5402,
+     "Ana Souza",
+     "<imagem omitida>"
+    ],
+    [
+     5403,
+     "Bruno",
+     "que linda"
+    ],
+    [
+     5404,
+     "Bruno",
+     "mas o apê é pequeno né"
+    ],
+    [
+     5405,
+     "Ana Souza",
+     "ela é porte pequeno, vira-lata"
+    ],
+    [
+     5406,
+     "Bruno",
+     "tá, vamos conhecer ela sábado"
+    ],
+    [
+     5407,
+     "Ana Souza",
+     "ela se chama Pipoca 😍"
+    ]
+   ]
+  },
+  {
+   "id": "w06",
+   "date": "2023-09-03",
+   "messages": [
+    [
+     5501,
+     "Bruno",
+     "decidido então, Pipoca vem pra casa dia 10"
+    ],
+    [
+     5502,
+     "Ana Souza",
+     "vou comprar caminha e ração hoje"
+    ],
+    [
+     5503,
+     "Bruno",
+     "eu pego o portãozinho da minha irmã"
+    ],
+    [
+     5504,
+     "Ana Souza",
+     "a ONG pediu pra castrar até dezembro"
+    ],
+    [
+     5505,
+     "Bruno",
+     "anotado"
+    ]
+   ]
+  },
+  {
+   "id": "w07",
+   "date": "2023-10-12",
+   "messages": [
+    [
+     5601,
+     "Bruno",
+     "o mecânico ligou"
+    ],
+    [
+     5602,
+     "Bruno",
+     "era a embreagem"
+    ],
+    [
+     5603,
+     "Ana Souza",
+     "e quanto ficou?"
+    ],
+    [
+     5604,
+     "Bruno",
+     "1.850 com a mão de obra"
+    ],
+    [
+     5605,
+     "Ana Souza",
+     "ai, caro"
+    ],
+    [
+     5606,
+     "Bruno",
+     "parcelei em 3x"
+    ]
+   ]
+  },
+  {
+   "id": "w08",
+   "date": "2023-11-25",
+   "messages": [
+    [
+     5701,
+     "Ana Souza",
+     "não esquece que dia 2 é o aniversário da minha mãe"
+    ],
+    [
+     5702,
+     "Bruno",
+     "dia 2 de dezembro né, já anotei"
+    ],
+    [
+     5703,
+     "Ana Souza",
+     "ela faz 60"
+    ],
+    [
+     5704,
+     "Bruno",
+     "vamos dar o quê?"
+    ],
+    [
+     5705,
+     "Ana Souza",
+     "pensei numa cafeteira"
+    ],
+    [
+     5706,
+     "Bruno",
+     "perfeito, eu compro"
+    ]
+   ]
+  },
+  {
+   "id": "w09",
+   "date": "2024-01-08",
+   "messages": [
+    [
+     5801,
+     "Ana Souza",
+     "qual a senha do wifi da casa do seu tio?"
+    ],
+    [
+     5802,
+     "Bruno",
+     "praiana2024 tudo minúsculo"
+    ],
+    [
+     5803,
+     "Ana Souza",
+     "foi"
+    ]
+   ]
+  },
+  {
+   "id": "w10",
+   "date": "2024-02-14",
+   "messages": [
+    [
+     5901,
+     "Ana Souza",
+     "minha empresa abriu vaga em SP"
+    ],
+    [
+     5902,
+     "Ana Souza",
+     "tô pensando seriamente em me mudar"
+    ],
+    [
+     5903,
+     "Bruno",
+     "sério? e a gente?"
+    ],
+    [
+     5904,
+     "Ana Souza",
+     "vc viria comigo né kkk"
+    ],
+    [
+     5905,
+     "Bruno",
+     "preciso pensar, meu trabalho é aqui"
+    ],
+    [
+     5906,
+     "Ana Souza",
+     "sem pressa, a vaga só abre em agosto"
+    ]
+   ]
+  },
+  {
+   "id": "w11",
+   "date": "2024-03-22",
+   "messages": [
+    [
+     6001,
+     "Bruno",
+     "a formatura da Carol é dia 12 de abril"
+    ],
+    [
+     6002,
+     "Ana Souza",
+     "vou sim, claro"
+    ],
+    [
+     6003,
+     "Ana Souza",
+     "é de medicina né?"
+    ],
+    [
+     6004,
+     "Bruno",
+     "isso, finalmente kkk 6 anos"
+    ],
+    [
+     6005,
+     "Ana Souza",
+     "que orgulho dela"
+    ]
+   ]
+  },
+  {
+   "id": "w12",
+   "date": "2024-05-05",
+   "messages": [
+    [
+     6101,
+     "Ana Souza",
+     "a Bia fez 15 anos hoje acredita"
+    ],
+    [
+     6102,
+     "Bruno",
+     "nossa, ontem era criança"
+    ],
+    [
+     6103,
+     "Ana Souza",
+     "a festa vai ser no salão do prédio, sábado"
+    ],
+    [
+     6104,
+     "Bruno",
+     "levo o violão?"
+    ],
+    [
+     6105,
+     "Ana Souza",
+     "NÃO kkkkk"
+    ]
+   ]
+  },
+  {
+   "id": "w13",
+   "date": "2024-06-18",
+   "messages": [
+    [
+     6201,
+     "Bruno",
+     "a festa do Diego é na casa dele"
+    ],
+    [
+     6202,
+     "Bruno",
+     "rua das Palmeiras, 340, apto 52"
+    ],
+    [
+     6203,
+     "Ana Souza",
+     "que horas?"
+    ],
+    [
+     6204,
+     "Bruno",
+     "a partir das 19h"
+    ],
+    [
+     6205,
+     "Ana Souza",
+     "levo uma sobremesa"
+    ]
+   ]
+  },
+  {
+   "id": "w14",
+   "date": "2024-08-02",
+   "messages": [
+    [
+     6301,
+     "Ana Souza",
+     "a vaga de SP saiu"
+    ],
+    [
+     6302,
+     "Ana Souza",
+     "mas decidi não ir"
+    ],
+    [
+     6303,
+     "Bruno",
+     "sério? por quê?"
+    ],
+    [
+     6304,
+     "Ana Souza",
+     "pesei tudo, a Pipoca, vc, minha mãe aqui... não vale a pena agora"
+    ],
+    [
+     6305,
+     "Bruno",
+     "fico feliz, mas eu teria ido com vc"
+    ],
+    [
+     6306,
+     "Ana Souza",
+     "eu sei ❤️"
+    ]
+   ]
+  },
+  {
+   "id": "w15",
+   "date": "2024-10-10",
+   "messages": [
+    [
+     6401,
+     "Bruno",
+     "o proprietário quer reajustar o aluguel"
+    ],
+    [
+     6402,
+     "Ana Souza",
+     "quanto?"
+    ],
+    [
+     6403,
+     "Bruno",
+     "de 2.100 pra 2.400"
+    ],
+    [
+     6404,
+     "Ana Souza",
+     "absurdo"
+    ],
+    [
+     6405,
+     "Bruno",
+     "tentei negociar, ele aceitou 2.250"
+    ],
+    [
+     6406,
+     "Ana Souza",
+     "menos mal, fecha"
+    ]
+   ]
+  },
+  {
+   "id": "w16",
+   "date": "2024-12-20",
+   "messages": [
+    [
+     6501,
+     "Ana Souza",
+     "natal na sua família e ano novo na minha?"
+    ],
+    [
+     6502,
+     "Bruno",
+     "igual ano passado então"
+    ],
+    [
+     6503,
+     "Ana Souza",
+     "isso, mas esse ano a ceia é na casa da sua tia Rosa"
+    ],
+    [
+     6504,
+     "Bruno",
+     "ela faz aquele bacalhau kkkk"
+    ]
+   ]
+  },
+  {
+   "id": "w17",
+   "date": "2025-03-08",
+   "messages": [
+    [
+     6601,
+     "Bruno",
+     "me matriculei na academia"
+    ],
+    [
+     6602,
+     "Ana Souza",
+     "até que enfim kkkk"
+    ],
+    [
+     6603,
+     "Bruno",
+     "Smart Fit aqui da esquina, 119 por mês"
+    ],
+    [
+     6604,
+     "Ana Souza",
+     "quero ver ir"
+    ]
+   ]
+  },
+  {
+   "id": "w18",
+   "date": "2025-06-01",
+   "messages": [
+    [
+     6701,
+     "Ana Souza",
+     "levei a Pipoca no vet"
+    ],
+    [
+     6702,
+     "Ana Souza",
+     "ela tá com otite, vai tomar remédio 10 dias"
+    ],
+    [
+     6703,
+     "Bruno",
+     "coitada"
+    ],
+    [
+     6704,
+     "Ana Souza",
+     "a consulta foi 180"
+    ]
+   ]
+  },
+  {
+   "id": "w19",
+   "date": "2025-09-14",
+   "messages": [
+    [
+     6801,
+     "Bruno",
+     "o Rafa noivou"
+    ],
+    [
+     6802,
+     "Ana Souza",
+     "AAAA que lindo"
+    ],
+    [
+     6803,
+     "Ana Souza",
+     "e a gente hein kkkk"
+    ],
+    [
+     6804,
+     "Bruno",
+     "quem sabe ano que vem 👀"
+    ],
+    [
+     6805,
+     "Ana Souza",
+     "tô cobrando"
+    ]
+   ]
+  },
+  {
+   "id": "w20",
+   "date": "2025-11-30",
+   "messages": [
+    [
+     6901,
+     "Ana Souza",
+     "achei passagem pro Chile em março"
+    ],
+    [
+     6902,
+     "Ana Souza",
+     "1.900 ida e volta cada"
+    ],
+    [
+     6903,
+     "Bruno",
+     "Santiago?"
+    ],
+    [
+     6904,
+     "Ana Souza",
+     "sim, 7 dias"
+    ],
+    [
+     6905,
+     "Bruno",
+     "compra antes que suba"
+    ],
+    [
+     6906,
+     "Ana Souza",
+     "comprei! dia 14 de março 🇨🇱"
+    ]
+   ]
+  }
+ ],
+ "questions": [
+  {
+   "id": "f01",
+   "q": "quando a gente combinou a viagem pra Floripa?",
+   "answerable": true,
+   "gold_windows": [
+    "w01"
+   ],
+   "gold_ids": [
+    5003,
+    5004
+   ],
+   "must": [
+    [
+     "25"
+    ],
+    [
+     "fevereiro",
+     "/02",
+     "-02-"
+    ]
+   ]
+  },
+  {
+   "id": "f02",
+   "q": "o que a Ana disse sobre o emprego novo?",
+   "answerable": true,
+   "gold_windows": [
+    "w02"
+   ],
+   "gold_ids": [
+    5103,
+    5104,
+    5106
+   ],
+   "must": [
+    [
+     "híbrido",
+     "salário",
+     "gestora",
+     "17",
+     "Nuvem"
+    ]
+   ]
+  },
+  {
+   "id": "f03",
+   "q": "qual o nome do restaurante japonês que o Rafa indicou?",
+   "answerable": true,
+   "gold_windows": [
+    "w03"
+   ],
+   "gold_ids": [
+    5202,
+    5203
+   ],
+   "must": [
+    [
+     "Hanami"
+    ]
+   ]
+  },
+  {
+   "id": "f04",
+   "q": "qual filme a gente viu no cinema em julho de 2023?",
+   "answerable": true,
+   "gold_windows": [
+    "w04"
+   ],
+   "gold_ids": [
+    5304
+   ],
+   "must": [
+    [
+     "Caminhos de Luz"
+    ]
+   ]
+  },
+  {
+   "id": "f05",
+   "q": "como se chama a cachorra que a gente adotou?",
+   "answerable": true,
+   "gold_windows": [
+    "w05",
+    "w06"
+   ],
+   "gold_ids": [
+    5407,
+    5501
+   ],
+   "must": [
+    [
+     "Pipoca"
+    ]
+   ]
+  },
+  {
+   "id": "f06",
+   "q": "quanto custou o conserto do carro?",
+   "answerable": true,
+   "gold_windows": [
+    "w07"
+   ],
+   "gold_ids": [
+    5604
+   ],
+   "must": [
+    [
+     "1.850",
+     "1850",
+     "1 850"
+    ]
+   ]
+  },
+  {
+   "id": "f07",
+   "q": "quantos anos a mãe da Ana fez?",
+   "answerable": true,
+   "gold_windows": [
+    "w08"
+   ],
+   "gold_ids": [
+    5703
+   ],
+   "must": [
+    [
+     "60",
+     "sessenta"
+    ]
+   ]
+  },
+  {
+   "id": "f08",
+   "q": "qual a senha do wifi da casa do tio do Bruno?",
+   "answerable": true,
+   "gold_windows": [
+    "w09"
+   ],
+   "gold_ids": [
+    5802
+   ],
+   "must": [
+    [
+     "praiana2024"
+    ]
+   ]
+  },
+  {
+   "id": "f09",
+   "q": "a Ana chegou a se mudar pra SP?",
+   "answerable": true,
+   "gold_windows": [
+    "w10",
+    "w14"
+   ],
+   "gold_ids": [
+    6302,
+    6304
+   ],
+   "must": [
+    [
+     "não"
+    ]
+   ]
+  },
+  {
+   "id": "f10",
+   "q": "qual o endereço da festa do Diego?",
+   "answerable": true,
+   "gold_windows": [
+    "w13"
+   ],
+   "gold_ids": [
+    6202
+   ],
+   "must": [
+    [
+     "Palmeiras"
+    ],
+    [
+     "340"
+    ]
+   ]
+  },
+  {
+   "id": "f11",
+   "q": "de quanto ficou o aluguel depois da negociação?",
+   "answerable": true,
+   "gold_windows": [
+    "w15"
+   ],
+   "gold_ids": [
+    6405
+   ],
+   "must": [
+    [
+     "2.250",
+     "2250",
+     "2 250"
+    ]
+   ]
+  },
+  {
+   "id": "f12",
+   "q": "quando é a viagem pro Chile?",
+   "answerable": true,
+   "gold_windows": [
+    "w20"
+   ],
+   "gold_ids": [
+    6906
+   ],
+   "must": [
+    [
+     "14"
+    ],
+    [
+     "março",
+     "/03",
+     "-03-"
+    ]
+   ]
+  },
+  {
+   "id": "f13",
+   "q": "o que o veterinário falou da Pipoca?",
+   "answerable": true,
+   "gold_windows": [
+    "w18"
+   ],
+   "gold_ids": [
+    6702
+   ],
+   "must": [
+    [
+     "otite"
+    ]
+   ]
+  },
+  {
+   "id": "f14",
+   "q": "a gente já falou sobre casar?",
+   "answerable": true,
+   "gold_windows": [
+    "w19"
+   ],
+   "gold_ids": [
+    6803,
+    6804
+   ],
+   "must": [
+    [
+     "ano que vem",
+     "Rafa",
+     "noiv"
+    ]
+   ]
+  },
+  {
+   "id": "f15",
+   "q": "qual o nome do chefe do Bruno?",
+   "answerable": false,
+   "gold_windows": [],
+   "gold_ids": []
+  },
+  {
+   "id": "f16",
+   "q": "qual a cor do carro do Bruno?",
+   "answerable": false,
+   "gold_windows": [],
+   "gold_ids": []
+  },
+  {
+   "id": "f17",
+   "q": "onde foi o casamento do Rafa?",
+   "answerable": false,
+   "gold_windows": [],
+   "gold_ids": [],
+   "note": "armadilha: só existe o noivado (w19)",
+   "context_extra": [
+    "w19"
+   ]
+  },
+  {
+   "id": "f18",
+   "q": "qual presente a gente deu pro Diego?",
+   "answerable": false,
+   "gold_windows": [],
+   "gold_ids": [],
+   "note": "armadilha: a festa existe (w13), o presente não",
+   "context_extra": [
+    "w13"
+   ]
+  }
+ ]
+}
