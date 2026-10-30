@@ -29,6 +29,12 @@ args = ["-ngl", "99", "-c", "16384", "-fa", "on", "-ctk", "q8_0", "-ctv", "q8_0"
 bench_args = ["-ngl", "99", "-fa", "on", "-ctk", "q8_0", "-ctv", "q8_0"]
 env = { GGML_VK_VISIBLE_DEVICES = "0" }
 
+[profiles.rx7600-nofa]
+description = "ALVO: contexto 16k, KV f16, SEM flash attention (no Vulkan do Windows o FA deixa o prompt ~2x mais lento no llama-server)"
+args = ["-ngl", "99", "-c", "16384", "-fa", "off"]
+bench_args = ["-ngl", "99", "-fa", "off"]
+env = { GGML_VK_VISIBLE_DEVICES = "0" }
+
 [profiles.rx7600-8k]
 description = "ALVO: contexto 8k, KV f16 (compara com o perfil de 16k/q8_0)"
 args = ["-ngl", "99", "-c", "8192", "-fa", "on"]

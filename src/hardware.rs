@@ -4,7 +4,9 @@
 //! (Ryzen 7 5700X + RX 7600); o relatório separa o que veio de outra máquina.
 
 use serde::{Deserialize, Serialize};
+#[cfg(not(windows))]
 use std::fs;
+#[cfg(not(windows))]
 use std::path::PathBuf;
 use std::process::Command;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -24,6 +26,43 @@ pub struct Fingerprint {
     pub is_target: bool,
 }
 
+/// Saída de um comando do PowerShell, sem espaços nas pontas. `None` se falhar ou vier vazia.
+#[cfg(windows)]
+fn powershell(cmd: &str) -> Option<String> {
+    let out = Command::new("powershell")
+        .args(["-NoProfile", "-NonInteractive", "-Command", cmd])
+        .output()
+        .ok()?;
+    let s = String::from_utf8_lossy(&out.stdout).trim().to_string();
+    (out.status.success() && !s.is_empty()).then_some(s)
+}
+
+#[cfg(windows)]
+fn cpu() -> String {
+    powershell("(Get-CimInstance Win32_Processor | Select-Object -First 1).Name")
+        .unwrap_or_else(|| "?".into())
+}
+
+#[cfg(windows)]
+fn ram_gb() -> f64 {
+    powershell("(Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory")
+        .and_then(|b| b.parse::<f64>().ok())
+        .map(|b| (b / 1073741824.0 * 10.0).round() / 10.0)
+        .unwrap_or(0.0)
+}
+
+#[cfg(windows)]
+fn host() -> String {
+    std::env::var("COMPUTERNAME").unwrap_or_default()
+}
+
+#[cfg(windows)]
+fn os() -> String {
+    powershell(r#"$o = Get-CimInstance Win32_OperatingSystem; "$($o.Caption) $($o.Version)""#)
+        .unwrap_or_else(|| std::env::consts::OS.into())
+}
+
+#[cfg(not(windows))]
 fn cpu() -> String {
     fs::read_to_string("/proc/cpuinfo")
         .ok()
@@ -36,6 +75,7 @@ fn cpu() -> String {
         .unwrap_or_else(|| "?".into())
 }
 
+#[cfg(not(windows))]
 fn ram_gb() -> f64 {
     fs::read_to_string("/proc/meminfo")
         .ok()
@@ -62,6 +102,13 @@ fn gpus() -> Vec<String> {
             return names;
         }
     }
+    #[cfg(windows)]
+    {
+        powershell("(Get-CimInstance Win32_VideoController).Name")
+            .map(|s| s.lines().map(|l| l.trim().to_string()).collect())
+            .unwrap_or_default()
+    }
+    #[cfg(not(windows))]
     Command::new("lspci")
         .output()
         .map(|o| {
@@ -74,15 +121,25 @@ fn gpus() -> Vec<String> {
         .unwrap_or_default()
 }
 
+#[cfg(not(windows))]
+fn host() -> String {
+    fs::read_to_string("/proc/sys/kernel/hostname")
+        .map(|s| s.trim().to_string())
+        .unwrap_or_default()
+}
+
+#[cfg(not(windows))]
+fn os() -> String {
+    fs::read_to_string("/proc/sys/kernel/osrelease")
+        .map(|s| format!("Linux {}", s.trim()))
+        .unwrap_or_else(|_| std::env::consts::OS.into())
+}
+
 pub fn fingerprint() -> Fingerprint {
     let gpus = gpus();
     Fingerprint {
-        host: fs::read_to_string("/proc/sys/kernel/hostname")
-            .map(|s| s.trim().to_string())
-            .unwrap_or_default(),
-        os: fs::read_to_string("/proc/sys/kernel/osrelease")
-            .map(|s| format!("Linux {}", s.trim()))
-            .unwrap_or_else(|_| std::env::consts::OS.into()),
+        host: host(),
+        os: os(),
         cpu: cpu(),
         ram_gb: ram_gb(),
         is_target: gpus.iter().any(|g| g.contains(TARGET_GPU)),
@@ -90,7 +147,27 @@ pub fn fingerprint() -> Fingerprint {
     }
 }
 
+/// VRAM dedicada em uso, somada entre os adaptadores, pelo contador "GPU Adapter Memory" do
+/// Windows (vale para qualquer fabricante). Cada leitura leva ~1 s (o `typeperf` amostra uma vez).
+#[cfg(windows)]
+pub fn vram_used_mib() -> Option<f64> {
+    let out = Command::new("typeperf")
+        .args([r"\GPU Adapter Memory(*)\Dedicated Usage", "-sc", "1"])
+        .output()
+        .ok()?;
+    let text = String::from_utf8_lossy(&out.stdout);
+    // CSV: linha 1 = cabeçalho, linha 2 = "data","bytes adaptador 1","bytes adaptador 2",…
+    let row = text.lines().filter(|l| l.starts_with('"')).nth(1)?;
+    let bytes: f64 = row
+        .split(',')
+        .skip(1)
+        .filter_map(|v| v.trim_matches('"').parse::<f64>().ok())
+        .sum();
+    Some((bytes / 1048576.0 * 10.0).round() / 10.0)
+}
+
 /// `mem_info_vram_used` das placas AMD (vendor 0x1002). Vazio em outras GPUs.
+#[cfg(not(windows))]
 fn amdgpu_vram_files() -> Vec<PathBuf> {
     let Ok(dir) = fs::read_dir("/sys/class/drm") else {
         return vec![];
@@ -108,6 +185,7 @@ fn amdgpu_vram_files() -> Vec<PathBuf> {
         .collect()
 }
 
+#[cfg(not(windows))]
 pub fn vram_used_mib() -> Option<f64> {
     let files = amdgpu_vram_files();
     if files.is_empty() {
@@ -120,7 +198,7 @@ pub fn vram_used_mib() -> Option<f64> {
     Some((bytes as f64 / 1048576.0 * 10.0).round() / 10.0)
 }
 
-/// Amostra a VRAM usada (amdgpu) em segundo plano e guarda o pico.
+/// Amostra a VRAM usada (amdgpu no Linux, contador de GPU no Windows) em segundo plano e guarda o pico.
 pub struct VramSampler {
     stop: Arc<AtomicBool>,
     peak: Arc<Mutex<Option<f64>>>,

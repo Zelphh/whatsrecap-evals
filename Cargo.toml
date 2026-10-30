@@ -12,7 +12,7 @@ path = "src/main.rs"
 
 [dependencies]
 # Contratos com o LLM (schemas, prompts, ToolCall) vêm direto do app: nada de cópia.
-core-chat = { path = "../../Documentos/whats-recap/crates/core-chat" }
+core-chat = { path = "../whats-recap/crates/core-chat" }
 anyhow = "1"
 chrono = "0.4.45"
 clap = { version = "4.6", features = ["derive"] }

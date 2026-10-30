@@ -163,6 +163,8 @@ impl Config {
     }
 
     pub fn bin(&self, name: &str) -> PathBuf {
-        self.llama_dir.join(name)
+        // Os binários do llama.cpp no Windows terminam em .exe.
+        self.llama_dir
+            .join(format!("{name}{}", std::env::consts::EXE_SUFFIX))
     }
 }

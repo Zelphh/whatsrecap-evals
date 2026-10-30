@@ -184,10 +184,15 @@ impl Server {
 
 impl Drop for Server {
     fn drop(&mut self) {
-        // SIGINT primeiro para o llama-server encerrar limpo; SIGKILL se não sair.
+        // SIGINT primeiro para o llama-server encerrar limpo; SIGKILL se não sair. No Windows não há
+        // SIGINT para outro processo: `kill` (TerminateProcess) direto, sem esperar 20 s à toa.
+        #[cfg(unix)]
         let _ = Command::new("kill")
             .args(["-INT", &self.child.id().to_string()])
             .status();
+        #[cfg(windows)]
+        let deadline = Instant::now();
+        #[cfg(unix)]
         let deadline = Instant::now() + Duration::from_secs(20);
         while Instant::now() < deadline {
             if let Ok(Some(_)) = self.child.try_wait() {

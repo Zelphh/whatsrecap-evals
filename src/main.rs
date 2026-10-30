@@ -270,7 +270,7 @@ fn main() -> Result<()> {
                 "{}",
                 serde_json::to_string_pretty(&hardware::fingerprint())?
             );
-            println!("VRAM usada (amdgpu): {:?} MiB", hardware::vram_used_mib());
+            println!("VRAM usada: {:?} MiB", hardware::vram_used_mib());
         }
         Cmd::List => {
             println!("Modelos:");

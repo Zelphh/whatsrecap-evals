@@ -1,6 +1,6 @@
 # whatsrecap-evals
 
-Benchmark dos modelos de linguagem locais que o [WhatsRecap](../../Documentos/whats-recap) vai usar.
+Benchmark dos modelos de linguagem locais que o [WhatsRecap](../whats-recap) vai usar.
 Sobe um `llama-server` (llama.cpp, Vulkan) por modelo, roda as tarefas do app com **saída estruturada
 obrigatória** (`json_schema`) e grava cada resultado com o hardware, o modelo, a versão do llama.cpp
 e as flags usadas.
@@ -16,15 +16,16 @@ prompt `v1` é sempre o que o app envia hoje; as outras são experimentos.
 ## Preparação
 
 ```sh
-scripts/setup-llama-cpp.sh            # baixa o llama.cpp pré-compilado (Vulkan) para vendor/
+scripts/setup-llama-cpp.sh            # Linux: baixa o llama.cpp pré-compilado (Vulkan) para vendor/
+scripts/setup-llama-cpp.ps1           # Windows: idem (zip win-vulkan-x64; -Backend rocm-10.0 para comparar)
 cargo build --release                 # binário em target/release/evals
 ./target/release/evals selftest       # valida datasets e métricas sem modelo (gabarito → nota máxima)
 ./target/release/evals list           # modelos, embedders, perfis e o que já foi baixado
 ./target/release/evals download qwen3.5-4b-q4km e5-small-q8   # ou --all (~45 GB)
 ```
 
-O `Cargo.toml` aponta para `../../Documentos/whats-recap/crates/core-chat`. Se o app estiver em
-outro lugar na máquina alvo, ajuste esse caminho.
+O `Cargo.toml` aponta para `../whats-recap/crates/core-chat` (os dois repositórios lado a lado). Se o
+app estiver em outro lugar, ajuste esse caminho.
 
 ## Uso
 
@@ -108,9 +109,11 @@ src/
   bench.rs             llama-bench + chunk real + extrapolação
   retrieval.rs         embeddings, FTS5 (mesmo tokenizer do app) e RRF
   server.rs client.rs  llama-server como subprocesso e cliente HTTP
-  hardware.rs          impressão digital do hardware e VRAM (amdgpu via sysfs)
+  hardware.rs          impressão digital do hardware e VRAM (sysfs no Linux, typeperf no Windows)
   report.rs            REPORT.md e summary.csv
 ```
 
-A leitura de VRAM usa o sysfs do `amdgpu` (Linux). Em outro sistema ela fica vazia, e os buffers que
-o llama.cpp reporta no log continuam valendo como estimativa.
+A leitura de VRAM usa o sysfs do `amdgpu` no Linux e o contador "GPU Adapter Memory" (`typeperf`) no
+Windows; nos dois casos é a VRAM total em uso (inclui o desktop), por isso cada execução grava a leitura
+antes e depois de carregar o modelo. Os buffers que o llama.cpp reporta no log valem como estimativa
+independente. No Windows cada leitura leva ~1 s, então o pico é amostrado a cada ~1 s.
